@@ -1,19 +1,29 @@
-import express, {Request, Response, NextFunction} from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 
 import { tokenVerification } from './middlewares/token-verification.guard';
+import { config } from './config/config';
+import { z } from 'zod';
 
 import userRouter from './routes/users';
-import { z } from 'zod';
 
 const app = express();
 const port = 8080;
-const tokenLessPaths = ['/users/login', '/users/register'];
-const mongoUrl = 'mongodb://127.0.0.1:27017/yummy-yams';
 
+// routes that do not require a token
+const tokenLessPaths = [
+    '/users/magic-login',
+    '/users/register'
+];
+
+// MongoDB connection URL, to be moved to .env file
+const mongoUrl = config.mongoUrl;
+
+// body parser middleware to parse JSON body
 app.use(bodyParser.json());
 
+// middleware to verify token for all routes except the ones in tokenLessPaths
 app.use((req, res, next) => {
     // unless paths
     if (tokenLessPaths.includes(req.path)) {
@@ -23,21 +33,23 @@ app.use((req, res, next) => {
     tokenVerification(req, res, next);
 });
 
+// routes subpaths
 app.use('/users', userRouter);
 
 // error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error(err);
     // only send error message if it is a string
-    if (typeof err === 'string') {
-        return res.status(500).send(err);
-    } else if (err instanceof z.ZodError) {
+    if (err instanceof z.ZodError) {
         return res.status(400).send(err.errors);
+    } else if (err instanceof Error && err.message) {
+        return res.status(500).send(err.message);
     } else {
         return res.status(500).send('Oops! Something went wrong!');
     }
 });
 
+// connect to MongoDB
 mongoose.connect(mongoUrl)
     .then(() => {
         console.log('Connected to MongoDB');
@@ -46,6 +58,7 @@ mongoose.connect(mongoUrl)
         console.error(err);
     });
 
+// start server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

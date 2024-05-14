@@ -17,7 +17,7 @@ db.createCollection('users', {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: [ "name", "email", "password", "pastriesWon", "triesNumber" ],
+      required: [ "name", "email" ],
       properties: {
         name: {
           bsonType: "string",
@@ -27,9 +27,13 @@ db.createCollection('users', {
           bsonType: "string",
           description: "unique email and is required"
         },
-        password: {
+        magicLink: {
           bsonType: "string",
-          description: "user password and is required"
+          description: "magic link to authenticate the user"
+        },
+        magicLinkExpiration: {
+          bsonType: "date",
+          description: "magic link expiration date"
         },
         pastriesWon: {
           bsonType: "array",

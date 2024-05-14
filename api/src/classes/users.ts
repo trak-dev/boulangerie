@@ -1,10 +1,9 @@
-import { register, login } from "../core/users"
-import { IUser } from "../models/user";
+import { register, login } from "../core/users";
 
-export const registerUser = async (email: string, password: string, name: string) => {
-    return register({ email, password, name, pastriesWon: null, triesNumber: 0} as IUser);
+export const registerUser = (email: string, name: string) => {
+    return register(email, name);
 }    
 
-export const loginUser = async (email: string, password: string) => {
-    return login(email, password);
+export const loginUser = (magicLink: string) => {
+    return login(magicLink);
 }
