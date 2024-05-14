@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 import userRouter from './routes/users';
 import gameRouter from './routes/games';
+import pastriesRouter from './routes/pastries';
 import { IUser } from './models/user';
 
 const app = express();
@@ -29,7 +30,8 @@ const tokenLessPaths = [
     '/users/register',
     '/users/send-magic-link',
     '/game/scoreboard',
-    '/game/is-game-over'
+    '/game/is-game-over',
+    '/pastries'
 ];
 
 // MongoDB connection URL, to be moved to .env file
@@ -51,6 +53,7 @@ app.use((req, res, next) => {
 // routes subpaths
 app.use('/users', userRouter);
 app.use('/game', gameRouter);
+app.use('/pastries', pastriesRouter);
 
 // error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

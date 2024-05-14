@@ -1,4 +1,5 @@
 import Pastries, { PastryWon } from '../models/pastry';
+import user from '../models/user';
 
 /**
  * Counts the total number of pastries left in stock.
@@ -32,6 +33,7 @@ export const getAndAttributePastriesLeft = async(quantity: number, pastriesLeft:
             randomPastry = pastries[randomIndex];
         }
         randomPastry.stock --;
+        randomPastry.quantityWon ++;
         remainingQuantity --;
         const existingPastryIndex = attributedPastries.findIndex(pastry => pastry.name === randomPastry.name);
         if (existingPastryIndex !== -1) {
@@ -42,4 +44,20 @@ export const getAndAttributePastriesLeft = async(quantity: number, pastriesLeft:
         await randomPastry.save();
     }
     return attributedPastries;
+}
+
+/**
+ * Retrieves all pastries.
+ * @returns A Promise that resolves to an array of all pastries.
+ */
+export const getAllPastries = async() => {
+    return await Pastries.find().sort({ stock: -1 });
+}
+
+/**
+ * Retrieves the pastries won by a user.
+ * @returns A Promise that resolves to an array of pastries won by a user.
+ */
+export const getPastriesFromUserId = async(userId: string) => {
+    return await user.findById(userId, 'pastriesWon -_id');
 }
