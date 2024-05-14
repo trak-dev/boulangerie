@@ -37,11 +37,11 @@ db.createCollection('users', {
         },
         pastriesWon: {
           bsonType: "array",
-          description: "array of pastries ID won by the user"
+          description: "array of pastries won by the user"
         },
-        triesNumber: {
+        triesLeft: {
           bsonType: "int",
-          description: "number of tries done (max 3)"
+          description: "number of tries left (max 3)"
         },
       }
     }

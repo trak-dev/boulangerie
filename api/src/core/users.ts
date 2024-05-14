@@ -1,4 +1,4 @@
-import User, { IUser } from '../models/user';
+import User, { IUser, UsersLeaderBoard } from '../models/user';
 import crypto from 'crypto';
 import { addMinutes } from 'date-fns';
 import jwt from 'jsonwebtoken';
@@ -13,10 +13,6 @@ import { config } from '../config/config';
  * @returns A promise that resolves to void.
  */
 export const register = async (email: string, name: string): Promise<void> => {
-    // check if the user already exists
-    const isUserExists = await isUserAlreadyExists(email);
-    if (isUserExists) throw new Error('User already exists');
-
     // create a new user object
     const user = {
         email,
@@ -24,7 +20,7 @@ export const register = async (email: string, name: string): Promise<void> => {
         magicLink: '',
         magicLinkExpiration: new Date(),
         pastriesWon: [],
-        triesNumber: 0
+        triesLeft: 3
     };
 
     // generate a magic link and an expiration date, 15 minuts from now
@@ -79,7 +75,70 @@ export const login = async (magicLink: string): Promise<string> => {
     await user.save();
 
     // get important user data
-    const { email, triesNumber, pastriesWon, name } = user;
+    const { email, triesLeft, pastriesWon, name, _id } = user;
     // return a JWT token
-    return jwt.sign({  email, triesNumber, pastriesWon, name }, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
+    return jwt.sign({ email, triesLeft, pastriesWon, name, id: _id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
 }
+
+/**
+ * Gets the user data from a JWT token.
+ * @param token - The JWT token.
+ * @returns The user data.
+ */
+export const getUserFromId = async (id: string): Promise<IUser | undefined> => {
+    return await User.findById(id) || undefined;
+}
+
+/**
+ * Sends a magic link to the user to login.
+ * @param email - The email of the user.
+ * @returns A Promise that resolves to void.
+ * @throws Error if the user is not found.
+ */
+export const sendMagicLink = async (email: string): Promise<void> => {
+    // search for the user in the database
+    const user = await User.findOne({ email });
+    if (!user) throw new Error('User not found');
+
+    // generate a new magic link and expiration date
+    user.magicLink = crypto.randomBytes(20).toString('hex');
+    user.magicLinkExpiration = addMinutes(new Date(), 15);
+
+    await user.save();
+
+    const emailMessage = `You can now login using the following link: http://localhost:3000/login?magicLink=${user.magicLink}, it will expire in 15 mins.`;
+
+    // send an email with the new magic link
+    return await sendEmail(user.email, 'Magic link for login', emailMessage);
+}
+
+/**
+ * Checks if a user can play the game.
+ * @param user - The user object.
+ * @returns A boolean indicating if the user can play.
+ * @throws {Error} If the user has no tries left or has already won a pastry.
+ */
+export const canUserPlay = (user: IUser): boolean => {
+    if (user.triesLeft === 0) throw new Error('No tries left');
+    if (user.pastriesWon && user.pastriesWon[0]) throw new Error('User has already won a pastry');
+    return true;
+}
+
+/**
+ * Gets the scoreboard.
+ * @returns A promise that resolves to an array of users sorted by the number of pastries won.
+ */
+export const getScoreBoard = async (): Promise<UsersLeaderBoard[]> => {
+    const users = await User.find({}, 'name pastriesWon').sort({ pastriesWon: -1 }) as IUser[];
+    let usersWithTotalPastries: UsersLeaderBoard[] = [];
+    for (const user of users) {
+        let totalPastries = 0;
+        if (user.pastriesWon) {
+            totalPastries = user.pastriesWon.reduce((acc, pastry) => acc + pastry.quantity, 0);
+        }
+        usersWithTotalPastries.push({ name: user.name, pastriesWon: user.pastriesWon || [], totalPastries});
+    }
+
+    return usersWithTotalPastries;
+}
+
