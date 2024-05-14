@@ -8,3 +8,15 @@ services:
       - 27017:27017
     volumes:
       - ./api/database/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  api:
+    container_name: yummy-yams-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+    env_file:
+      - ./api/.env

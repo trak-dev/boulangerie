@@ -15,5 +15,6 @@ export const config = {
         secret : process.env.JWT_SECRET || 'secret',
         expiresIn: '1h'
     },
-    mongoUrl: process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/yummy-yams'
+    mongoUrl: process.env.MONGOURL || 'mongodb://127.0.0.1:27017/yummy-yams',
+    port : process.env.PORT || 8080
 };
