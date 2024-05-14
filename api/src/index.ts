@@ -12,7 +12,7 @@ import pastriesRouter from './routes/pastries';
 import { IUser } from './models/user';
 
 const app = express();
-const port = 8080;
+const port = config.port;
 
 interface CustomLocals {
     user?: IUser;
