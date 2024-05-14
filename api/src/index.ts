@@ -7,14 +7,29 @@ import { config } from './config/config';
 import { z } from 'zod';
 
 import userRouter from './routes/users';
+import gameRouter from './routes/games';
+import { IUser } from './models/user';
 
 const app = express();
 const port = 8080;
 
+interface CustomLocals {
+    user?: IUser;
+  }
+  
+declare module 'express' {
+    export interface Response  {
+        locals: CustomLocals;
+    }
+}
+
 // routes that do not require a token
 const tokenLessPaths = [
     '/users/magic-login',
-    '/users/register'
+    '/users/register',
+    '/users/send-magic-link',
+    '/game/scoreboard',
+    '/game/is-game-over'
 ];
 
 // MongoDB connection URL, to be moved to .env file
@@ -35,6 +50,7 @@ app.use((req, res, next) => {
 
 // routes subpaths
 app.use('/users', userRouter);
+app.use('/game', gameRouter);
 
 // error handling
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

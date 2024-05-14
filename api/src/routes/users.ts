@@ -1,8 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import Pastry, { IPastry } from '../models/pastry'; 
-import { userSchema, loginSchema } from '../validators/user';
-import { registerUser, loginUser } from '../classes/users';
-import { sendEmail } from '../core/emails';
+import { userSchema, loginSchema, sendMagicLinkSchema } from '../validators/user';
+import { registerUser, loginUser, sendMagicLinkForLogin } from '../classes/users';
 
 const router = Router();
 
@@ -20,6 +18,16 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
     try {
         const { email, name } = userSchema.parse(req.body);
         await registerUser(email, name);
+        return res.status(200).send("Magic link sent!");
+    } catch (error) {
+        return next(error);
+    }
+});
+
+router.post('/send-magic-link', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = sendMagicLinkSchema.parse(req.body);
+        await sendMagicLinkForLogin(email);
         return res.status(200).send("Magic link sent!");
     } catch (error) {
         return next(error);

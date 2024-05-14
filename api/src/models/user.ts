@@ -1,12 +1,19 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { PastryWon, pastryWonSchema } from './pastry';
 
 export interface IUser extends Document {
     name: string;
     email: string;
     magicLink: string;
     magicLinkExpiration: Date;
-    pastriesWon: string[] | null;
-    triesNumber: number;
+    pastriesWon: PastryWon[] | null;
+    triesLeft: number;
+}
+
+export interface UsersLeaderBoard  {
+    name: string;
+    pastriesWon: PastryWon[];
+    totalPastries: number;
 }
 
 const UserSchema: Schema = new Schema({
@@ -14,8 +21,9 @@ const UserSchema: Schema = new Schema({
     email: { type: String, required: true, unique: true },
     magicLink: { type: String, required: false },
     magicLinkExpiration: { type: Date, required: false },
-    pastriesWon: { type: [String], required: false },
-    triesNumber: { type: Number, required: false },
+    pastriesWon: { type: [pastryWonSchema], required: false },
+    triesLeft: { type: Number, required: false },
+
 });
 
 export default mongoose.model<IUser>('User', UserSchema);
