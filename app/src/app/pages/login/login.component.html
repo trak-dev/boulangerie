@@ -1,22 +1,23 @@
+<p-messages class="toast" />
 <div class="login-page">
+
   <div class="login-form">
     <h1 class="form-title">Login</h1>
-    <div class="form-group">
-      <label for="name" class="form-label">Name</label>
-      <input pInputText id="name" [(ngModel)]="name" required class="form-input">
+    <div>
+      <div class="form-group switch-to-magic">
+        <p-checkbox [(ngModel)]="magicLogin" binary="true" class="form-checkbox"></p-checkbox>
+        <label for="magicLogin" class="form-label">Use Magic Login instead !</label>
+      </div>
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input pInputText id="email" [(ngModel)]="email" required class="form-input">
+      </div>
+      <div class="form-group" *ngIf="!magicLogin">
+        <label for="password" class="form-label">Password</label>
+        <input pInputText type="password" id="password" [(ngModel)]="password" required class="form-input">
+      </div>
+      <button pButton label="let me in !" (click)="login()" class="login-button">let me in !</button>
+      <button pButton label="Not registered yet? Register!" class="register-button mt-3" [routerLink]="['/register']">Not registered yet? Register!</button>
     </div>
-    <div class="form-group">
-      <label for="email" class="form-label">Email</label>
-      <input pInputText id="email" [(ngModel)]="email" required class="form-input">
-    </div>
-    <div class="form-group" *ngIf="!magicLogin">
-      <label for="password" class="form-label">Password</label>
-      <input pInputText type="password" id="password" [(ngModel)]="password" required class="form-input">
-    </div>
-    <div class="form-group">
-      <p-checkbox [(ngModel)]="magicLogin" binary="true" class="form-checkbox"></p-checkbox>
-      <label for="magicLogin" class="form-label">Use Magic Login</label>
-    </div>
-    <button pButton label="Login" (click)="login()" class="login-button">let me in !</button>
   </div>
 </div>

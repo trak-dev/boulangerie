@@ -5,9 +5,8 @@ const router = Router();
 
 router.post('/play', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (!res.locals.user) throw new Error('User not found');
-        const playResult = await play(res.locals.user);
-        return res.status(200).send(playResult);
+        const playResult = await play(res.locals.user!);
+        return res.status(200).send({playResult});
     } catch (error) {
         return next(error);
     }
@@ -16,7 +15,7 @@ router.post('/play', async (req: Request, res: Response, next: NextFunction) => 
 router.get('/scoreboard', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const scoreboard = await getScoreboard();
-        return res.status(200).send(scoreboard);
+        return res.status(200).send({scoreboard});
     } catch (error) {
         return next(error);
     }
@@ -25,7 +24,7 @@ router.get('/scoreboard', async (req: Request, res: Response, next: NextFunction
 router.get('/is-game-over', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const isGameOver = await areAllPastriesWon();
-        return res.status(200).send(isGameOver);
+        return res.status(200).send({isGameOver});
     } catch (error) {
         return next(error);
     }

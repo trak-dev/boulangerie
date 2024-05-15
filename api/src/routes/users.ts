@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { userSchema, loginSchema, sendMagicLinkSchema, userWithPasswordSchema } from '../validators/user';
+import { userSchema, loginSchema, sendMagicLinkSchema, userWithPasswordSchema, loginWithPasswordSchema } from '../validators/user';
 import { registerUser, loginUser, sendMagicLinkForLogin, loginWithPassword } from '../classes/users';
 
 const router = Router();
@@ -7,8 +7,8 @@ const router = Router();
 router.post('/magic-login', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { magicLink } = loginSchema.parse(req.body);
-        const token = await loginUser(magicLink);
-        return res.status(200).send({ token });
+        const user = await loginUser(magicLink);
+        return res.status(200).send(user);
     } catch (error) {
         return next(error);
     }
@@ -18,7 +18,7 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
     try {
         const { email, name } = userSchema.parse(req.body);
         await registerUser(email, name);
-        return res.status(200).send("Magic link sent!");
+        return res.status(200).send({success: "Magic link sent!"});
     } catch (error) {
         return next(error);
     }
@@ -28,7 +28,7 @@ router.post('/send-magic-link', async (req: Request, res: Response, next: NextFu
     try {
         const { email } = sendMagicLinkSchema.parse(req.body);
         await sendMagicLinkForLogin(email);
-        return res.status(200).send("Magic link sent!");
+        return res.status(200).send({success: "Magic link sent!"});
     } catch (error) {
         return next(error);
     }
@@ -37,8 +37,8 @@ router.post('/send-magic-link', async (req: Request, res: Response, next: NextFu
 router.put('/password-register', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, name, password } = userWithPasswordSchema.parse(req.body);
-        const token = await registerUser(email, name, password);
-        return res.status(200).send(token);
+        const user = await registerUser(email, name, password);
+        return res.status(200).send(user);
     } catch (error) {
         return next(error);
     }
@@ -46,9 +46,17 @@ router.put('/password-register', async (req: Request, res: Response, next: NextF
 
 router.post('/password-login', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = userWithPasswordSchema.parse(req.body);
-        const token = await loginWithPassword(email, password);
-        return res.status(200).send(token);
+        const { email, password } = loginWithPasswordSchema.parse(req.body);
+        const user = await loginWithPassword(email, password);
+        return res.status(200).send(user);
+    } catch (error) {
+        return next(error);
+    }
+});
+
+router.get('/isUserConnected', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        return res.status(200).send({ connected: true });
     } catch (error) {
         return next(error);
     }

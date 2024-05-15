@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import cors  from 'cors';
 
 import { tokenVerification } from './middlewares/token-verification.guard';
 import { config } from './config/config';
@@ -16,7 +17,7 @@ const port = config.port;
 
 interface CustomLocals {
     user?: IUser;
-  }
+}
   
 declare module 'express' {
     export interface Response  {
@@ -41,6 +42,7 @@ const mongoUrl = config.mongoUrl;
 
 // body parser middleware to parse JSON body
 app.use(bodyParser.json());
+app.use(cors());
 
 // middleware to verify token for all routes except the ones in tokenLessPaths
 app.use((req, res, next) => {

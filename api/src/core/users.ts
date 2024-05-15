@@ -13,7 +13,7 @@ import { config } from '../config/config';
  * @throws Error if the user already exists.
  * @returns A promise that resolves to void.
  */
-export const register = async (email: string, name: string, password: string | null = null): Promise<string | void> => {
+export const register = async (email: string, name: string, password: string | null = null): Promise<IUser | void> => {
     // create a new user object
     const user = {
         email,
@@ -39,16 +39,17 @@ export const register = async (email: string, name: string, password: string | n
 
     user.password = hashedPassword;
 
-    console.log(user);
-
     // save the user in the database
     const newUser: IUser = new User(user);
     await newUser.save();
 
     if (password) return await passwordLogin(email, password);
 
+    // parse the magic link
+    user.magicLink = encodeURIComponent(user.magicLink);
+
     // create a welcome message
-    const welcomeMessage = `Welcome to the Pastry yamms! You can now login using the following link: http://localhost:3000/login?magicLink=${user.magicLink}, it will expire in 15 mins. Enjoy the game!`;
+    const welcomeMessage = `Welcome to the Pastry yamms ${user.name}! You can now login using the following link: ${config.frontUrl}/login?magicLink=${user.magicLink}, it will expire in 15 mins. Enjoy the game!`;
 
     // send an email with the magic link
     return await sendEmail(
@@ -74,7 +75,7 @@ export const isUserAlreadyExists = async (email: string): Promise<boolean> => {
  * @returns A Promise that resolves to a JWT token.
  * @throws Error if the user is not found, the magic link is invalid, or there is an error saving the user data.
  */
-export const login = async (magicLink: string): Promise<string> => {
+export const login = async (magicLink: string): Promise<IUser> => {
     // search for the user in the database
     const user = await User.findOne({
         magicLink
@@ -89,11 +90,13 @@ export const login = async (magicLink: string): Promise<string> => {
     user.magicLink = '';
     user.magicLinkExpiration = new Date();
     await user.save();
+    
+    user.password = '';
 
-    // get important user data
-    const { email, triesLeft, pastriesWon, name, _id } = user;
-    // return a JWT token
-    return jwt.sign({ email, triesLeft, pastriesWon, name, id: _id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
+    const token = jwt.sign({ email: user.email, name: user.name, id: user._id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
+    const userWithToken = user.toObject();
+    userWithToken.token = token;
+    return userWithToken;
 }
 
 /**
@@ -122,7 +125,10 @@ export const sendMagicLink = async (email: string): Promise<void> => {
 
     await user.save();
 
-    const emailMessage = `You can now login using the following link: http://localhost:3000/login?magicLink=${user.magicLink}, it will expire in 15 mins.`;
+    // safe url parse the magic link
+    user.magicLink = encodeURIComponent(user.magicLink);
+
+    const emailMessage = `Hi ${user.name} ! You can now login using the following link: ${config.frontUrl}/login?magicLink=${user.magicLink}, it will expire in 15 mins.`;
 
     // send an email with the new magic link
     return await sendEmail(user.email, 'Magic link for login', emailMessage);
@@ -158,7 +164,7 @@ export const getScoreBoard = async (): Promise<UsersLeaderBoard[]> => {
     return usersWithTotalPastries;
 }
 
-export const passwordLogin = async (email: string, password: string): Promise<string> => {
+export const passwordLogin = async (email: string, password: string): Promise<IUser> => {
     const user = await User.findOne({ email });
     if (!user) throw new Error('User not found');
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -167,7 +173,10 @@ export const passwordLogin = async (email: string, password: string): Promise<st
     user.magicLinkExpiration = new Date();
     await user.save();
     user.password = '';
-    return jwt.sign({ email: user.email, triesLeft: user.triesLeft, pastriesWon: user.pastriesWon, name: user.name, id: user._id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
+    const token = jwt.sign({ email: user.email, name: user.name, id: user._id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
+    const userWithToken = user.toObject();
+    userWithToken.token = token;
+    return userWithToken;
 };
     
 

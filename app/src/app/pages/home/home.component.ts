@@ -9,4 +9,9 @@ import { Component } from '@angular/core';
 })
 export class HomeComponent {
 
+  signout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  }
+
 }

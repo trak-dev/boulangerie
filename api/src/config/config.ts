@@ -16,5 +16,6 @@ export const config = {
         expiresIn: '1h'
     },
     mongoUrl: process.env.MONGOURL || 'mongodb://127.0.0.1:27017/yummy-yams',
-    port : process.env.PORT || 8080
+    port : process.env.PORT || 8080,
+    frontUrl: "http://localhost:4200"
 };
