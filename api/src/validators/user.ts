@@ -12,3 +12,8 @@ export const sendMagicLinkSchema = z.object({
 export const loginSchema = z.object({
     magicLink: z.string().min(20),
 });
+
+export const userWithPasswordSchema = userSchema.extend({
+    password: z.string().min(8),
+});
+

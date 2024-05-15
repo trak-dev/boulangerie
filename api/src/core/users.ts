@@ -1,4 +1,5 @@
 import User, { IUser, UsersLeaderBoard } from '../models/user';
+import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { addMinutes } from 'date-fns';
 import jwt from 'jsonwebtoken';
@@ -12,7 +13,7 @@ import { config } from '../config/config';
  * @throws Error if the user already exists.
  * @returns A promise that resolves to void.
  */
-export const register = async (email: string, name: string): Promise<void> => {
+export const register = async (email: string, name: string, password: string | null = null): Promise<string | void> => {
     // create a new user object
     const user = {
         email,
@@ -20,16 +21,31 @@ export const register = async (email: string, name: string): Promise<void> => {
         magicLink: '',
         magicLinkExpiration: new Date(),
         pastriesWon: [],
+        password: '',
         triesLeft: 3
     };
 
-    // generate a magic link and an expiration date, 15 minuts from now
-    user.magicLink = crypto.randomBytes(20).toString('hex');
-    user.magicLinkExpiration = addMinutes(new Date(), 15);
+    let hashedPassword = '';
+
+    if (password) {
+        hashedPassword = await bcrypt.hash(password, 10);
+    } else {
+        const randomPassword = crypto.randomBytes(20).toString('hex');
+        hashedPassword = await bcrypt.hash(randomPassword, 10);
+        // generate a magic link and an expiration date, 15 minuts from now
+        user.magicLink = crypto.randomBytes(20).toString('hex');
+        user.magicLinkExpiration = addMinutes(new Date(), 15);
+    }
+
+    user.password = hashedPassword;
+
+    console.log(user);
 
     // save the user in the database
     const newUser: IUser = new User(user);
     await newUser.save();
+
+    if (password) return await passwordLogin(email, password);
 
     // create a welcome message
     const welcomeMessage = `Welcome to the Pastry yamms! You can now login using the following link: http://localhost:3000/login?magicLink=${user.magicLink}, it will expire in 15 mins. Enjoy the game!`;
@@ -141,4 +157,17 @@ export const getScoreBoard = async (): Promise<UsersLeaderBoard[]> => {
 
     return usersWithTotalPastries;
 }
+
+export const passwordLogin = async (email: string, password: string): Promise<string> => {
+    const user = await User.findOne({ email });
+    if (!user) throw new Error('User not found');
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) throw new Error('Invalid password');
+    user.magicLink = '';
+    user.magicLinkExpiration = new Date();
+    await user.save();
+    user.password = '';
+    return jwt.sign({ email: user.email, triesLeft: user.triesLeft, pastriesWon: user.pastriesWon, name: user.name, id: user._id }, config.jwt.secret, { expiresIn: config.jwt.expiresIn });
+};
+    
 

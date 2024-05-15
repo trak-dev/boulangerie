@@ -31,7 +31,9 @@ const tokenLessPaths = [
     '/users/send-magic-link',
     '/game/scoreboard',
     '/game/is-game-over',
-    '/pastries'
+    '/pastries',
+    '/users/password-login',
+    '/users/password-register'
 ];
 
 // MongoDB connection URL, to be moved to .env file

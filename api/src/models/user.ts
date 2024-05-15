@@ -8,6 +8,7 @@ export interface IUser extends Document {
     magicLinkExpiration: Date;
     pastriesWon: PastryWon[] | null;
     triesLeft: number;
+    password: string;
 }
 
 export interface UsersLeaderBoard  {
@@ -23,7 +24,7 @@ const UserSchema: Schema = new Schema({
     magicLinkExpiration: { type: Date, required: false },
     pastriesWon: { type: [pastryWonSchema], required: false },
     triesLeft: { type: Number, required: false },
-
+    password: { type: String, required: true }
 });
 
 export default mongoose.model<IUser>('User', UserSchema);

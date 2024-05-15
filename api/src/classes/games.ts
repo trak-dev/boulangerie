@@ -10,7 +10,7 @@ import { PastryWon } from "../models/pastry";
  * @returns A promise that resolves to an object containing the attributed pastries and the number of tries left.
  * @throws Error if the user is not allowed to play or if there are no pastries left.
  */
-export const play = async (user: IUser): Promise<{attributedPastries: PastryWon[], triesLeft: number}> => {
+export const play = async (user: IUser): Promise<{attributedPastries: PastryWon[], triesLeft: number, dices: number[]}> => {
     // check if user is allowed to play
     const isUserAllowedToPlay = await canUserPlay(user);
     if (!isUserAllowedToPlay) throw new Error('User is not allowed to play');
@@ -40,7 +40,7 @@ export const play = async (user: IUser): Promise<{attributedPastries: PastryWon[
         await user.save();
     }
 
-    return { attributedPastries , triesLeft: user.triesLeft };
+    return { attributedPastries , triesLeft: user.triesLeft, dices: scores};
 };
 
 /**

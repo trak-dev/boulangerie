@@ -1,9 +1,9 @@
-import { register, login, sendMagicLink, isUserAlreadyExists } from "../core/users";
+import { register, login, sendMagicLink, isUserAlreadyExists, passwordLogin } from "../core/users";
 
-export const registerUser = async (email: string, name: string) => {
+export const registerUser = async (email: string, name: string, password: string | null = null) => {
     const userExists = await isUserAlreadyExists(email);
     if (userExists) throw new Error('User already exist');
-    return register(email, name);
+    return register(email, name, password);
 }    
 
 export const loginUser = (magicLink: string) => {
@@ -21,4 +21,8 @@ export const sendMagicLinkForLogin = async (email: string) => {
     const userExists = await isUserAlreadyExists(email);
     if (!userExists) throw new Error('User does not exist');
     return sendMagicLink(email);
+}
+
+export const loginWithPassword = async (email: string, password: string) => {
+    return passwordLogin(email, password);
 }

@@ -31,6 +31,10 @@ db.createCollection('users', {
           bsonType: "string",
           description: "magic link to authenticate the user"
         },
+        password: {
+          bsonType: "string",
+          description: "password of the user"
+        },
         magicLinkExpiration: {
           bsonType: "date",
           description: "magic link expiration date"
