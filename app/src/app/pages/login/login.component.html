@@ -1,0 +1,22 @@
+<p-dialog header="Login" [(visible)]="displayLogin" [style]="{width: '500px'}" >
+    <div class="p-fluid">
+      <div class="p-field">
+        <label for="name">Name</label>
+        <input pInputText id="name" [(ngModel)]="name" required>
+      </div>
+      <div class="p-field">
+        <label for="email">Email</label>
+        <input pInputText id="email" [(ngModel)]="email" required>
+      </div>
+      <div class="p-field" *ngIf="!magicLogin">
+        <label for="password">Password</label>
+        <input pInputText type="password" id="password" [(ngModel)]="password" required>
+      </div>
+      <div class="p-field-checkbox">
+        <p-checkbox [(ngModel)]="magicLogin" binary="true"></p-checkbox>
+        <label for="magicLogin">Use Magic Login</label>
+      </div>
+      <button pButton label="Login" (click)="login()"></button>
+    </div>
+  </p-dialog>
+  
