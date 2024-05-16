@@ -23,3 +23,13 @@ services:
     volumes:
       - ./api:/app
       - /app/node_modules
+
+  app:
+    container_name: yummy-yams-app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    environment:
+      - NODE_ENV=production
