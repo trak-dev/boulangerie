@@ -1,0 +1,24 @@
+.prize-image {
+    width: 100%;
+    height: auto;
+  }
+  .card {
+    padding: 1em;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .main-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+  }

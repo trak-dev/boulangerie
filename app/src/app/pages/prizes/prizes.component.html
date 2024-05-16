@@ -1,0 +1,14 @@
+<div class="p-grid p-justify-center main-grid">
+  <div *ngFor="let prize of prizes" class="p-col-12 p-md-4 p-lg-3 p-sm-12" style="margin-bottom: 20px;">
+    <div class="card">
+      <img [src]="getImagePath(prize.url)" alt="{{prize.name}}" class="prize-image" style="width: 200px; display: block; margin: 0 auto;"/>
+      <div class="p-text-center">
+        <h3>{{ prize.name }}</h3>
+        <p>Quantity: {{ prize.quantity }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="p-grid p-justify-center button-wrapper" style="margin-top: 20px;">
+  <button pButton type="button" label="Go Back Home" routerLink="/home" class="p-button-primary"></button>
+</div>

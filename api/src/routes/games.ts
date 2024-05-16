@@ -3,10 +3,10 @@ import { play, getScoreboard, areAllPastriesWon } from '../classes/games';
 
 const router = Router();
 
-router.post('/play', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/play', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const playResult = await play(res.locals.user!);
-        return res.status(200).send({playResult});
+        return res.status(200).send(playResult);
     } catch (error) {
         return next(error);
     }
@@ -15,7 +15,7 @@ router.post('/play', async (req: Request, res: Response, next: NextFunction) => 
 router.get('/scoreboard', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const scoreboard = await getScoreboard();
-        return res.status(200).send({scoreboard});
+        return res.status(200).send(scoreboard);
     } catch (error) {
         return next(error);
     }

@@ -1,1 +1,18 @@
-<button style="font-size: 24px; padding: 10px 20px;" (click)="signout()">Sign me out</button>
+
+<div id="wrapper">
+  <p-messages class="toast" />
+  <h1>Yam's Dice Game</h1>
+
+  <div class="dice-container">
+    <div *ngFor="let dice of dices" class="dice">
+      <app-dice [value]="dice"></app-dice>
+    </div>
+  </div>
+  
+  <div class="actions">
+    <button p-button (click)="showScoreboard()">Scoreboard</button>
+    <button p-button (click)="launch()">Launch</button>
+    <button p-button (click)="showPrizes()">My Prizes</button>
+    <button p-button (click)="logout()">Logout</button>
+  </div>
+</div>

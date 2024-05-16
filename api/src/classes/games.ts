@@ -2,7 +2,7 @@ import { rollDices, countPastriesWon } from "../core/games";
 import { canUserPlay, getScoreBoard } from "../core/users";
 import { countPastriesLeft, getAndAttributePastriesLeft } from "../core/pastries";
 import { IUser, UsersLeaderBoard } from "../models/user";
-import { PastryWon } from "../models/pastry";
+import { PastryWon, playResultObject } from "../models/pastry";
 
 /**
  * Plays the game and returns the result.
@@ -10,7 +10,7 @@ import { PastryWon } from "../models/pastry";
  * @returns A promise that resolves to an object containing the attributed pastries and the number of tries left.
  * @throws Error if the user is not allowed to play or if there are no pastries left.
  */
-export const play = async (user: IUser): Promise<{attributedPastries: PastryWon[], triesLeft: number, dices: number[]}> => {
+export const play = async (user: IUser): Promise<playResultObject> => {
     // check if user is allowed to play
     const isUserAllowedToPlay = await canUserPlay(user);
     if (!isUserAllowedToPlay) throw new Error('User is not allowed to play');
@@ -35,7 +35,9 @@ export const play = async (user: IUser): Promise<{attributedPastries: PastryWon[
     } else {
         // get pastries array and change the stock
         attributedPastries = await getAndAttributePastriesLeft(pastriesWon , pastriesLeft);
-        
+
+        console.log("attributed", attributedPastries);
+
         user.pastriesWon = [...attributedPastries];
         await user.save();
     }

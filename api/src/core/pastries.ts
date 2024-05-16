@@ -39,7 +39,7 @@ export const getAndAttributePastriesLeft = async(quantity: number, pastriesLeft:
         if (existingPastryIndex !== -1) {
             attributedPastries[existingPastryIndex].quantity ++;
         } else {
-            attributedPastries.push({name: randomPastry.name, quantity: 1});
+            attributedPastries.push({name: randomPastry.name, quantity: 1, url: randomPastry.image});
         }
         await randomPastry.save();
     }

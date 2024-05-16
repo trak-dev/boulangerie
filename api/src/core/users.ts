@@ -5,6 +5,7 @@ import { addMinutes } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from './emails';
 import { config } from '../config/config';
+import sanitize, * as sanitizeHtml from 'sanitize-html';
 
 /**
  * Registers a new user.
@@ -17,7 +18,7 @@ export const register = async (email: string, name: string, password: string | n
     // create a new user object
     const user = {
         email,
-        name,
+        name: sanitize(name),
         magicLink: '',
         magicLinkExpiration: new Date(),
         pastriesWon: [],
@@ -154,6 +155,7 @@ export const getScoreBoard = async (): Promise<UsersLeaderBoard[]> => {
     const users = await User.find({}, 'name pastriesWon').sort({ pastriesWon: -1 }) as IUser[];
     let usersWithTotalPastries: UsersLeaderBoard[] = [];
     for (const user of users) {
+        console.log(user.pastriesWon)
         let totalPastries = 0;
         if (user.pastriesWon) {
             totalPastries = user.pastriesWon.reduce((acc, pastry) => acc + pastry.quantity, 0);

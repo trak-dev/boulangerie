@@ -1,0 +1,21 @@
+<div class="p-grid p-justify-center main-grid">
+    <div *ngFor="let user of leaderboard" class="p-col-12 p-md-4 p-lg-3 p-sm-12" style="margin-bottom: 20px;">
+      <div class="card">
+        <div class="p-card-header">
+          <h2>{{ user.name }}</h2>
+          <p>Total Pastries: {{ user.totalPastries }}</p>
+        </div>
+        <div class="p-card-content">
+          <div *ngFor="let pastry of user.pastriesWon">
+            <img [src]="getImagePath(pastry.url)" alt="{{ pastry.name }}" class="pastry-image" />
+            <p>{{ pastry.name }} ({{ pastry.quantity }})</p>
+            <p>won : {{ pastry.updatedAt | date: 'medium'}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="p-grid p-justify-center button-wrapper" style="margin-top: 20px;">
+    <button pButton type="button" label="Go Back Home" routerLink="/home" class="p-button-primary"></button>
+  </div>
+  

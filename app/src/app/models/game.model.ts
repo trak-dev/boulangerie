@@ -16,6 +16,7 @@ export interface PastryWon {
       name: string;
       quantity: number;
       url: string;
+      updatedAt: string;
     }[];
     totalPastries: number;
   }
