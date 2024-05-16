@@ -9,6 +9,7 @@ export interface IUser extends Document {
     pastriesWon: PastryWon[] | null;
     triesLeft: number;
     password: string;
+    token: string;
 }
 
 export interface UsersLeaderBoard  {

@@ -1,0 +1,26 @@
+<p-messages class="toast" />
+<div class="registration-page">
+  <div class="registration-form">
+    <h1 class="form-title">Registration</h1>
+    <div>
+      <div class="form-group switch-to-magic">
+        <p-checkbox [(ngModel)]="useMagicLogin" binary="true" class="form-checkbox"></p-checkbox>
+        <label for="useMagicLogin" class="form-label ml-2">Use Magic link instead !</label>
+      </div>
+      <div class="form-group">
+        <label for="name" class="form-label">Name</label>
+        <input pInputText id="name" [(ngModel)]="name" required class="form-input">
+      </div>
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input pInputText id="email" [(ngModel)]="email" required class="form-input">
+      </div>
+      <div class="form-group" *ngIf="!useMagicLogin">
+        <label for="password" class="form-label">Password</label>
+        <input pInputText type="password" id="password" [(ngModel)]="password" required class="form-input">
+      </div>
+      <button pButton label="Register" (click)="register()" class="register-button" [ngClass]="{'magic-register-button': useMagicLogin}">{{ useMagicLogin ? 'Send Magic Link' : 'Register' }}</button>
+      <button pButton label="Already have an account? Sign in!" class="login-button mt-3" [routerLink]="['/login']">Already have an account? Sign in!</button>
+    </div>
+  </div>
+</div>

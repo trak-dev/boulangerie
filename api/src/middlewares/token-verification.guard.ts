@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { config } from '../config/config';
 import { Token } from '../models/token';
 import { getUserFromId } from '../core/users';
+import { IUser } from '../models/user';
 
 
 /**
@@ -24,7 +25,9 @@ export const tokenVerification = async (req: Request, res: Response, next: NextF
         jwt.verify(token, config.jwt.secret);
         // get the user data from the token and add it to the request
         const decodedToken = jwt.decode(token) as Token;
-        res.locals.user = await getUserFromId(decodedToken.id);
+        const user = await getUserFromId(decodedToken.id);
+        if (!user) return res.status(401).json({ message: 'User not found' });
+        res.locals.user = user as IUser;
         next();
     } catch (error) {
         return res.status(401).json({ message: 'Invalid token' });
