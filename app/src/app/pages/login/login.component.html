@@ -2,23 +2,23 @@
 <div class="login-page">
 
   <div class="login-form">
-    <h1 class="form-title">Login</h1>
+    <h1 class="form-title">Connexion</h1>
     <div>
       <div class="form-group switch-to-magic">
         <p-checkbox [(ngModel)]="magicLogin" binary="true" class="form-checkbox"></p-checkbox>
-        <label for="magicLogin" class="form-label">Use Magic Login instead !</label>
+        <label for="magicLogin" class="form-label">Utiliser la Connexion Magique à la place !</label>
       </div>
       <div class="form-group">
         <label for="email" class="form-label">Email</label>
         <input pInputText id="email" [(ngModel)]="email" required class="form-input">
       </div>
       <div class="form-group" *ngIf="!magicLogin">
-        <label for="password" class="form-label">Password</label>
+        <label for="password" class="form-label">Mot de passe</label>
         <input pInputText type="password" id="password" [(ngModel)]="password" required class="form-input">
       </div>
-      <button pButton label="let me in !" (click)="login()" class="login-button">let me in !</button>
-      <button pButton label="Not registered yet? Register!" class="register-button mt-3" [routerLink]="['/register']">Not registered yet? Register!</button>
+      <button pButton label="laissez-moi entrer !" (click)="login()" class="login-button">laissez-moi entrer !</button>
+      <button pButton label="Pas encore inscrit ? Inscrivez-vous !" class="register-button mt-3" [routerLink]="['/register']">Pas encore inscrit ? Inscrivez-vous !</button>
     </div>
-    <button pButton label="I just want to se the scores !" class="score-button mt-3" [routerLink]="['/leaderboard']">I just want to se the scores !</button>
+    <button pButton label="Je veux juste voir les scores !" class="score-button mt-3" [routerLink]="['/leaderboard']">Je veux juste voir les scores !</button>
   </div>
 </div>

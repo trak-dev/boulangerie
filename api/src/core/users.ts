@@ -5,7 +5,7 @@ import { addMinutes } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from './emails';
 import { config } from '../config/config';
-import sanitize, * as sanitizeHtml from 'sanitize-html';
+import sanitize from 'sanitize-html';
 
 /**
  * Registers a new user.
@@ -50,12 +50,12 @@ export const register = async (email: string, name: string, password: string | n
     user.magicLink = encodeURIComponent(user.magicLink);
 
     // create a welcome message
-    const welcomeMessage = `Welcome to the Pastry yamms ${user.name}! You can now login using the following link: ${config.frontUrl}/login?magicLink=${user.magicLink}, it will expire in 15 mins. Enjoy the game!`;
+    const welcomeMessage = `Bienvenue chez Pastry yamms ${user.name}! Vous pouvez maintenant vous connecter en utilisant le lien suivant: ${config.frontUrl}/login?magicLink=${user.magicLink}, il expirera dans 15 minutes. Profitez du jeu!`;
 
     // send an email with the magic link
     return await sendEmail(
         user.email,
-        'Welcome to the Pastry yamms!',
+        'Bienvenue chez Pastry yamms!',
         welcomeMessage
     );
 }
@@ -81,12 +81,12 @@ export const login = async (magicLink: string): Promise<IUser> => {
     const user = await User.findOne({
         magicLink
     });
-    if (!user) throw new Error('User not found');
+    if (!user) throw new Error('Utilisateur non trouvé ❌');
     // compare the magic link from the request with the one in the database
     let isMagicLinkValid = magicLink === user.magicLink;
     // compare the expiration date of the magic link with the current date
     isMagicLinkValid = isMagicLinkValid && user.magicLinkExpiration > new Date();
-    if (!isMagicLinkValid) throw new Error('Invalid magic link');
+    if (!isMagicLinkValid) throw new Error('Lien magique invalide ❌');
     // delete the magic link from the database
     user.magicLink = '';
     user.magicLinkExpiration = new Date();
@@ -118,7 +118,7 @@ export const getUserFromId = async (id: string): Promise<IUser | undefined> => {
 export const sendMagicLink = async (email: string): Promise<void> => {
     // search for the user in the database
     const user = await User.findOne({ email });
-    if (!user) throw new Error('User not found');
+    if (!user) throw new Error('Utilisateur non trouvé ❌');
 
     // generate a new magic link and expiration date
     user.magicLink = crypto.randomBytes(20).toString('hex');
@@ -129,10 +129,10 @@ export const sendMagicLink = async (email: string): Promise<void> => {
     // safe url parse the magic link
     user.magicLink = encodeURIComponent(user.magicLink);
 
-    const emailMessage = `Hi ${user.name} ! You can now login using the following link: ${config.frontUrl}/login?magicLink=${user.magicLink}, it will expire in 15 mins.`;
+    const emailMessage = `Salut ${user.name} ! Vous pouvez maintenant vous connecter en utilisant le lien suivant : ${config.frontUrl}/login?magicLink=${user.magicLink}, il expirera dans 15 minutes.`;
 
     // send an email with the new magic link
-    return await sendEmail(user.email, 'Magic link for login', emailMessage);
+    return await sendEmail(user.email, 'Lien magique pour se connecter', emailMessage);
 }
 
 /**
@@ -142,8 +142,8 @@ export const sendMagicLink = async (email: string): Promise<void> => {
  * @throws {Error} If the user has no tries left or has already won a pastry.
  */
 export const canUserPlay = (user: IUser): boolean => {
-    if (user.triesLeft === 0) throw new Error('No tries left');
-    if (user.pastriesWon && user.pastriesWon[0]) throw new Error('User has already won a pastry');
+    if (user.triesLeft === 0) throw new Error('Plus d\'essais restants ❌');
+    if (user.pastriesWon && user.pastriesWon[0]) throw new Error('L\'utilisateur a déjà gagné une pâtisserie 🥐');
     return true;
 }
 
@@ -168,9 +168,9 @@ export const getScoreBoard = async (): Promise<UsersLeaderBoard[]> => {
 
 export const passwordLogin = async (email: string, password: string): Promise<IUser> => {
     const user = await User.findOne({ email });
-    if (!user) throw new Error('User not found');
+    if (!user) throw new Error('Utilisateur non trouvé ❌');
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) throw new Error('Invalid password');
+    if (!isPasswordValid) throw new Error('Mot de passe invalide ❌');
     user.magicLink = '';
     user.magicLinkExpiration = new Date();
     await user.save();
@@ -180,5 +180,3 @@ export const passwordLogin = async (email: string, password: string): Promise<IU
     userWithToken.token = token;
     return userWithToken;
 };
-    
-

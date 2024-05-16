@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { getPastries, getMyPastries } from '../classes/pastries';
+import { getPastries, getMyPastries, getCountPastriesLeft } from '../classes/pastries';
 
 const router = Router();
 
@@ -21,5 +21,15 @@ router.get('/mine', async (req: Request, res: Response, next: NextFunction) => {
         return next(error);
     }
 });
+
+router.get('/count-left', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const count = await getCountPastriesLeft();
+        return res.status(200).send({count});
+    } catch (error) {
+        return next(error);
+    }
+});
+
 
 export default router;

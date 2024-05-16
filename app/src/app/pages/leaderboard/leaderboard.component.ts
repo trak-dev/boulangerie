@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersLeaderBoard } from '../../models/game.model';
-import { GlobalService } from '../../services/global/global.service';
-import { Observable } from 'rxjs';
 import { CardModule } from 'primeng/card'; // PrimeNG Card module
 import { ButtonModule } from 'primeng/button'; // PrimeNG Button module
 import { RouterModule } from '@angular/router'; // For routerLink
@@ -20,12 +18,23 @@ import { GameService } from '../../services/game/game.service';
 export class LeaderboardComponent implements OnInit {
   leaderboard: UsersLeaderBoard[] = [];
 
-  constructor(private _global: GlobalService, private _message: MessageService, private _game: GameService) {
+  constructor( private _message: MessageService, private _game: GameService) {}
 
-  }
+  isGameOver = false;
+  totalLeft = 0;
 
   ngOnInit(): void {
     this.getLeaderboard();
+    this.getTotalLeft();
+    this.checkIfGameIsOver();
+  }
+
+  async checkIfGameIsOver() {
+    return this.isGameOver = await this._game.isGameOver();
+  }
+
+  async getTotalLeft() {
+    return this.totalLeft = await this._game.getTotalLeft();
   }
 
   async getLeaderboard() {
@@ -35,9 +44,9 @@ export class LeaderboardComponent implements OnInit {
     } catch (error: any) {
       console.error(error);
       if (error.error && typeof error.error === 'string' && error.error.length < 100) {
-        this._message.add({severity:'error', summary:'Error', detail:error.error, life: 3000});
+        this._message.add({severity:'error', summary:'Erreur', detail:error.error, life: 3000});
       } else {
-        this._message.add({severity:'error', summary:'Error', detail:'An error occurred. Please try again later.', life: 3000});
+        this._message.add({severity:'error', summary:'Erreur', detail:'Une erreur est survenue. Veuillez réessayer plus tard.', life: 3000});
       }
     }
   }

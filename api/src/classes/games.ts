@@ -13,11 +13,12 @@ import { PastryWon, playResultObject } from "../models/pastry";
 export const play = async (user: IUser): Promise<playResultObject> => {
     // check if user is allowed to play
     const isUserAllowedToPlay = await canUserPlay(user);
-    if (!isUserAllowedToPlay) throw new Error('User is not allowed to play');
-
+    if (!isUserAllowedToPlay) throw new Error('L\'utilisateur n\'est pas autorisé à jouer ❌');
+    
     // check if there are pastries left
     const pastriesLeft = await countPastriesLeft();
-    if (pastriesLeft === 0) throw new Error('No pastries left');
+    if (pastriesLeft === 0) throw new Error('Il ne reste plus de pâtisseries 🥐');
+    
 
     // roll the dices
     const scores = rollDices();

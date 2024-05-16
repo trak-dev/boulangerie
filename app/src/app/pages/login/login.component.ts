@@ -47,34 +47,33 @@ export class LoginComponent implements OnInit{
       window.history.replaceState({}, document.title, window.location.pathname);
       this.loginWithMagicLink();
     }
-
   }
-
+  
   async loginWithMagicLink() {
     try {
       this._global.setLoading(true);
       await this._accounts.loginWithMagicLink(this.magicLoginToken);
-      this._messages.add({ life: 3000, severity: 'success', summary: 'Success', detail: 'Logged in successfully' });
+      this._messages.add({ life: 3000, severity: 'success', summary: 'Succès', detail: 'Connecté avec succès 👍' });
       this._router.navigate(['/home']);
     } catch (err: any) {
       console.error(err);
       if (err.error && typeof err.error === 'string' && err.error.length < 100) {
-        return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: err.error });
+        return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: err.error });
       } else {
-        return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: 'Invalid magic link' });
+        return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: 'Lien magique invalide ❌' });
       }
     } finally {
       this._global.setLoading(false);
     }
   }
-
+  
   async login() {
     try {
       if (this.magicLogin) {
         await this._accounts.sendMagicLink(this.email);
-        return this._messages.add({ life: 3000, severity: 'success', summary: 'Success', detail: 'Magic link sent to your email' });
+        return this._messages.add({ life: 3000, severity: 'success', summary: 'Succès', detail: 'Lien magique envoyé à votre email 📧' });
       }
-      if (!this.email || !this.password) return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: 'Please enter your email and password' });
+      if (!this.email || !this.password) return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: 'Veuillez entrer votre email et mot de passe 🔐' });
       this._global.setLoading(true);
       if (this.magicLogin) {
         return await this._accounts.sendMagicLink(this.email);
@@ -84,14 +83,15 @@ export class LoginComponent implements OnInit{
       }
     } catch (err: any) {
       if (err.error && typeof err.error === 'string' && err.error.length < 100) {
-        return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: err.error });
+        return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: err.error });
       } else {
-        this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: 'Error while logging you in' });
+        this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: 'Erreur lors de la connexion ❌' });
       }
     } finally {
       this._global.setLoading(false);
     }
   }
+  
 
 
 }

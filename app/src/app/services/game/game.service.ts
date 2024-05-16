@@ -41,4 +41,32 @@ export class GameService {
       });
     }
 
+    isGameOver() {
+      return new Promise<boolean>((resolve, reject) => {
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        
+        this._http.get<{isGameOver: boolean}>(`${environment.api}/game/is-game-over`, { headers })
+          .subscribe({
+            next: (result) => resolve(result.isGameOver),
+            error: (err) => reject(err)
+          });
+      });
+    }
+
+    getTotalLeft() {
+      return new Promise<number>((resolve, reject) => {
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        
+        this._http.get<{count: number}>(`${environment.api}/pastries/count-left`, { headers })
+          .subscribe({
+            next: (result) => resolve(result.count),
+            error: (err) => reject(err)
+          });
+      });
+    }
+
 }

@@ -35,6 +35,7 @@ const tokenLessPaths = [
     '/pastries',
     '/users/password-login',
     '/users/password-register',
+    '/pastries/count-left'
 ];
 
 // MongoDB connection URL, to be moved to .env file

@@ -28,29 +28,30 @@ export class RegisterComponent {
 
   async register() {
     try {
-      if (!this.name || !this.email) return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: 'Name and email are required' });
+      if (!this.name || !this.email) return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: 'Nom et email sont requis ❗' });
       this._global.setLoading(true);
       if (this.useMagicLogin) {
         await this._accounts.register(this.email, this.name);
-        return this._messages.add({ life: 3000, severity: 'success', summary: 'Success', detail: 'Check your email for a magic link to login' });
+        return this._messages.add({ life: 3000, severity: 'success', summary: 'Succès', detail: 'Vérifiez votre email pour un lien magique pour vous connecter ✨' });
       } else {
-        if (!this.password) return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: 'Password is required' });
+        if (!this.password) return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: 'Le mot de passe est requis ❗' });
         await this._accounts.registerWithPassword(this.email, this.name, this.password);
-        this._messages.add({ life: 3000, severity: 'success', summary: 'Success', detail: 'Registered successfully' });
+        this._messages.add({ life: 3000, severity: 'success', summary: 'Succès', detail: 'Inscription réussie ✅' });
         // redirect to home page
         this._router.navigate(['/home']);
       }
     } catch (err: any) {
       console.error(err);
       if (err.error && typeof err.error === 'string' && err.error.length < 100) {
-        return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: err.error });
+        return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: err.error });
       } else {
-        return this._messages.add({ life: 3000, severity: 'error', summary: 'Error', detail: 'errir while registering you' });
+        return this._messages.add({ life: 3000, severity: 'error', summary: 'Erreur', detail: 'Erreur lors de votre inscription ❌' });
       }
     } finally {
       this._global.setLoading(false);
     }
   }
+  
 
 
 

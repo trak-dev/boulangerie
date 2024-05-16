@@ -1,21 +1,39 @@
-<div class="p-grid p-justify-center main-grid">
+<div *ngIf="leaderboard.length === 0; else LeaderBoardBlock" class="no-users-message">
+  <p>
+    🎉 Personne n'a encore gagné, tentez votre chance ! 🎉
+  </p>
+</div>
+
+<ng-template #LeaderBoardBlock>
+  <div *ngIf="isGameOver; else showLeftBlock" class="no-users-message">
+    <h1 class="highlight-message">
+      🎉 Le jeu est terminé, félicitations aux vainqueurs ! 🎉
+    </h1>
+  </div>
+  <ng-template #showLeftBlock>
+    <h3 class="highlight-message">
+      ⏰ Dépéchez-vous, il ne reste que {{totalLeft}} Pâtisseries  ⏰
+    </h3>
+  </ng-template>
+  <div class="p-grid p-justify-center main-grid">
     <div *ngFor="let user of leaderboard" class="p-col-12 p-md-4 p-lg-3 p-sm-12" style="margin-bottom: 20px;">
-      <div class="card">
+      <div class="card centered-card">
         <div class="p-card-header">
           <h2>{{ user.name }}</h2>
-          <p>Total Pastries: {{ user.totalPastries }}</p>
+          <p>Total de Pâtisseries: {{ user.totalPastries }}</p>
         </div>
         <div class="p-card-content">
-          <div *ngFor="let pastry of user.pastriesWon">
+          <div class="p-card-content" *ngFor="let pastry of user.pastriesWon">
             <img [src]="getImagePath(pastry.url)" alt="{{ pastry.name }}" class="pastry-image" />
             <p>{{ pastry.name }} ({{ pastry.quantity }})</p>
-            <p>won : {{ pastry.updatedAt | date: 'medium'}}</p>
+            <p>Gagné : {{ pastry.updatedAt | date: 'medium' }}</p>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="p-grid p-justify-center button-wrapper" style="margin-top: 20px;">
-    <button pButton type="button" label="Go Back Home" routerLink="/home" class="p-button-primary"></button>
-  </div>
-  
+</ng-template>
+
+<div class="button-wrapper">
+  <button pButton type="button" label="Retour à l'Accueil" routerLink="/home" class="p-button-primary"></button>
+</div>

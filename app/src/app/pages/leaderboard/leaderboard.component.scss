@@ -1,18 +1,58 @@
-.p-card-header {
-    text-align: center;
-  }
-  
-  .pastry-image {
-    width: 150px;
-    height: 150px;
-    display: inline-block;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-  
-  .card {
-    padding: 1em;
-    border: 1px solid #dcdcdc;
-    border-radius: 5px;
-    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
-  }
+p-card-header {
+  text-align: center;
+}
+
+.pastry-image {
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.card {
+  padding: 1em;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.centered-card {
+  width: 40%;
+  margin: 0 auto;
+}
+
+.p-card-content, .p-card-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-wrapper {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.main-grid {
+  margin-bottom: 80px; /* Ensure content above can be scrolled */
+}
+
+.no-users-message {
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 20px;
+}
+
+.highlight-message {
+  text-align: center;
+  font-size: 1.8em;
+  color: #ff6347; /* Tomato color to grab attention */
+  background-color: #fff3cd; /* Light yellow background */
+  padding: 15px;
+  border-radius: 5px;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

@@ -19,7 +19,7 @@ export const loginUser = (magicLink: string) => {
  */
 export const sendMagicLinkForLogin = async (email: string) => {
     const userExists = await isUserAlreadyExists(email);
-    if (!userExists) throw new Error('User does not exist');
+    if (!userExists) throw new Error('L\'utilisateur n\'existe pas ❌');
     return sendMagicLink(email);
 }
 

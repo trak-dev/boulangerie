@@ -1,7 +1,6 @@
-
 <div id="wrapper">
   <p-messages class="toast" />
-  <h1>Yam's Dice Game</h1>
+  <h1>Le Jeu de Dés du patissier</h1>
 
   <div class="dice-container">
     <div *ngFor="let dice of dices" class="dice">
@@ -10,9 +9,9 @@
   </div>
   
   <div class="actions">
-    <button p-button (click)="showScoreboard()">Scoreboard</button>
-    <button p-button (click)="launch()">Launch</button>
-    <button p-button (click)="showPrizes()">My Prizes</button>
-    <button p-button (click)="logout()">Logout</button>
+    <button p-button (click)="showScoreboard()">Tableau de Scores</button>
+    <button *ngIf="!this.gameOver" p-button (click)="launch()">Lancer</button>
+    <button p-button (click)="showPrizes()">Mes Prix</button>
+    <button p-button (click)="logout()">Déconnexion</button>
   </div>
 </div>
